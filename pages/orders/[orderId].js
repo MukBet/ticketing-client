@@ -1,8 +1,22 @@
 import useRequest from "../../hooks/use-request";
 import { useEffect, useState } from "react";
+import StripeCheckout from "react-stripe-checkout";
+import  Router from "next/router";
 
-const OrderShow = ({ order }) => {
+const OrderShow = ({ order, currentUser }) => {
   const [timeLeft, setTimeLeft] = useState('');
+  const { doRequest, errors } = useRequest({
+    url: '/api/payments',
+    method: 'post',
+    body: {
+      orderId: order.id
+    },
+    onSuccess: () => {
+      console.log('Payment Successful')
+
+      Router.push('/orders');
+    }
+  });
 
   useEffect(() => {
     const findTimeLeft = () => {
@@ -22,6 +36,16 @@ const OrderShow = ({ order }) => {
   return (
     <div>
       Time left to pay: {timeLeft} seconds
+      <StripeCheckout
+        token={({ id }) => {
+          console.log('id=', id);
+          doRequest({ token: id });
+        }}
+        stripeKey="pk_test_51SvNgvRREArcDv6tn0ZScnhcMfIKuEcW7HgnN78xJZabyQP8OkhL9uAEXaeg3gNu22ZjhwqyyVI3avwNhE3xKfVg00UVb9G2o4" // Replace with your actual public key
+        amount={order.ticket.price * 100}
+        email={currentUser.email}
+      />
+      {errors}
     </div>
   );
 }

@@ -18,7 +18,8 @@ const TicketShow = ({ ticket }) => {
     <div>
       <h1>{ticket.title}</h1>
       <h4>Price: ${ticket.price}</h4>
-      <button onClick={doRequest} className="btn btn-primary">Purchase</button>
+      {/* to not pass the event object to doRequest, we wrap it in an arrow function */}
+      <button onClick={() => doRequest()} className="btn btn-primary">Purchase</button>
       {errors}
     </div>
   );
