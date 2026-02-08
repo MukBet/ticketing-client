@@ -6,7 +6,10 @@ export default ({ req }) => {
     return axios.create({
       // ingress-nginx-controller - service name
       // ingress-nginx - namespace
-      baseURL: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseURL:
+        process.env.NODE_ENV === 'production'
+          ? 'https://www.ticketing-muzika-app-prod.store'
+          : 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local',
       headers: req.headers,
     });
   } else {
