@@ -62,4 +62,4 @@ const newTicket = () => {
   );
 }
 
-export default NewTicket;
+export default newTicket;

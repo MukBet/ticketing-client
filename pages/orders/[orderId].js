@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import StripeCheckout from "react-stripe-checkout";
 import  Router from "next/router";
 
+// https://dashboard.stripe.com/acct_..../test/settings/integration включил "Enable card data collection with a publishable key without using Stripe's pre-built UI elements"
+// чисто для моей локалки.
 const OrderShow = ({ order, currentUser }) => {
+  console.log('!!!!order=', order);
   const [timeLeft, setTimeLeft] = useState('');
   const { doRequest, errors } = useRequest({
     url: '/api/payments',
@@ -33,7 +36,7 @@ const OrderShow = ({ order, currentUser }) => {
     return <div>Order Expired</div>;
   }
 
-  return (
+  return ( // https://chatgpt.com/share/698430a6-bf14-8005-9fd7-78d29f578a24 
     <div>
       Time left to pay: {timeLeft} seconds
       <StripeCheckout
@@ -53,7 +56,8 @@ const OrderShow = ({ order, currentUser }) => {
 OrderShow.getInitialProps = async (context, client) => {
   const { orderId } = context.query;
   const { data } = await client.get(`/api/orders/${orderId}`);
-  return { ticket: data };
+  console.log('!!!!data=', data);
+  return { order: data };
 }
 
 export default OrderShow;
